@@ -1,0 +1,221 @@
+version: "3"
+services:
+  admin:
+    image: ethananony/alarm-dog-php:1.0.0
+    # ports:
+    #   - "9501:9501"
+    environment:
+      - DB_RO_HOST=mysql
+      - DB_PREFIX=xes_alarm_
+      - DB_RO_PORT=3306
+      - DB_RO_DATABASE=alarm_dog
+      - DB_RO_USERNAME=root
+      - DB_RO_PASSWORD=root
+      - DB_RW_HOST=mysql
+      - DB_RW_PORT=3306
+      - DB_RW_DATABASE=alarm_dog
+      - DB_RW_USERNAME=root
+      - DB_RW_PASSWORD=root
+      - REDIS_HOST=redis
+      - REDIS_AUTH=(null)
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - JWT_DEBUG=(false)
+      - LOGIN_CAPTCHA_TTL=300
+      - BASE_URI_API=http://127.0.0.1:8082
+      - BASE_URI_API_ALARM=http://api:9501
+      - NOTICER_EMAIL_SMTP_HOST=
+      - NOTICER_EMAIL_SMTP_PORT=
+      - NOTICER_EMAIL_USERNAME=
+      - NOTICER_EMAIL_PASSWORD=
+      - NOTICER_EMAIL_ENCRYPTION=ssl
+      - NOTICER_EMAIL_FROM_ADDRESS=
+      - NOTICER_EMAIL_FROM_NAME=哮天犬告警平台
+      - DOG_VARS_COMMON_ENV=[本地环境]
+      - CLICKHOUSE_DEFAULT_HOST=clickhouse
+      - CLICKHOUSE_DEFAULT_PORT=8123
+      - CLICKHOUSE_DEFAULT_USERNAME=default
+      - CLICKHOUSE_DEFAULT_PASSWORD=
+      - CLICKHOUSE_DEFAULT_DATABASE=alarm_dog
+      - CLICKHOUSE_DEFAULT_TIMEOUT=60
+      - CLICKHOUSE_DEFAULT_CONNECT_TIMEOUT=5
+      - MIDDLEWARE_ENABLE_CORS=(true)
+      - SWOOLE_HTTP_HOST=0.0.0.0
+      - SWOOLE_HTTP_PORT=9501
+    volumes: 
+      - ./alarm-dog-admin/:/opt/www:rw
+  fe:
+    image: ethananony/alarm-dog-fe:1.0.0
+    ports:
+      - "8081:8081"
+      - "8082:8082"
+    #   - "9505:80"
+    environment:
+      - VUE_APP_STATIC_PREFIX=//127.0.0.1:8081/admin/
+      - VUE_APP_BASE_API=//127.0.0.1:8081/api/
+      - DOG_FE_VERSION=docker-
+      - VUE_APP_FORCE_HTTPS=
+    volumes: 
+      - ./alarm-dog-fe/:/opt/www:rw
+      - ./docker/fe/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./docker/fe/nginx/logs:/var/log/nginx:rw
+      - ./docker/fe/docker-entrypoint.sh:/docker-entrypoint.sh
+    working_dir: /opt/www
+    entrypoint: [/docker-entrypoint.sh]
+  api:
+    # ports:
+    #   - "9502:9501"
+    image: ethananony/alarm-dog-php:1.0.0
+    environment:
+      - DB_RO_HOST=mysql
+      - DB_PREFIX=xes_alarm_
+      - DB_RO_PORT=3306
+      - DB_RO_DATABASE=alarm_dog
+      - DB_RO_USERNAME=root
+      - DB_RO_PASSWORD=root
+      - DB_RW_HOST=mysql
+      - DB_RW_PORT=3306
+      - DB_RW_DATABASE=alarm_dog
+      - DB_RW_USERNAME=root
+      - DB_RW_PASSWORD=root
+      - REDIS_HOST=redis
+      - REDIS_AUTH=(null)
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - NOTICER_EMAIL_SMTP_HOST=
+      - NOTICER_EMAIL_SMTP_PORT=
+      - NOTICER_EMAIL_USERNAME=
+      - NOTICER_EMAIL_PASSWORD=
+      - NOTICER_EMAIL_ENCRYPTION=ssl
+      - NOTICER_EMAIL_FROM_ADDRESS=
+      - NOTICER_EMAIL_FROM_NAME=哮天犬告警平台
+      - LOG_FORMATTER_CLASS_DEFAULT=Monolog\Formatter\LineFormatter
+      - LOG_FORMATTER_CLASS_MONITOR=Monolog\Formatter\LineFormatter
+      - LOG_FORMATTER_CLASS_NOTICER=Monolog\Formatter\LineFormatter
+      - MIDDLEWARE_ENABLE_CORS=(true)
+      - PRODUCER_DEFAULT_DRIVER=redis
+      - PRODUCER_DEFAULT_RATE_LIMIT=200
+      - PRODUCER_DATA_SYNC_INTERVAL=10000
+      - PRODUCER_MQPROXY_PROXY=http://mqproxy:8088
+      - PRODUCER_MQPROXY_APPID=
+      - PRODUCER_MQPROXY_APPKEY=
+      - PRODUCER_MQPROXY_TOPIC=alarm-dog
+      - PRODUCER_MQPROXY_BATCH_SIZE=1000
+      - PRODUCER_REDIS_KEY_MESSAGE=alarm-dog.queue.message
+      - PRODUCER_REDIS_INSTANCE=default
+      - PRODUCER_REDIS_BATCH_SIZE=10000
+      - PRODUCER_KAFKA_BROKERS=kafka:9092
+      - PRODUCER_KAFKA_TOPIC=alarm-dog
+      - PRODUCER_KAFKA_FLUSH_TIMEOUT=1000
+      - PRODUCER_SIGN_TIMESTAMP_RANGE=1800
+      - APP_ADMIN_URL=http://127.0.0.1:8081
+      - MONITOR_SELF_MONITOR_ENABLE=false
+      - SWOOLE_HTTP_HOST=0.0.0.0
+      - SWOOLE_HTTP_PORT=9501
+    volumes:
+      - ./alarm-dog-api/:/opt/www:rw
+  consumer:
+    image: ethananony/alarm-dog-php:1.0.0
+    environment:
+      - DB_RO_HOST=mysql
+      - DB_PREFIX=xes_alarm_
+      - DB_RO_PORT=3306
+      - DB_RO_DATABASE=alarm_dog
+      - DB_RO_USERNAME=root
+      - DB_RO_PASSWORD=root
+      - DB_RW_HOST=mysql
+      - DB_RW_PORT=3306
+      - DB_RW_DATABASE=alarm_dog
+      - DB_RW_USERNAME=root
+      - DB_RW_PASSWORD=root
+      - REDIS_HOST=redis
+      - REDIS_AUTH=(null)
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - NOTICER_EMAIL_SMTP_HOST=
+      - NOTICER_EMAIL_SMTP_PORT=
+      - NOTICER_EMAIL_USERNAME=
+      - NOTICER_EMAIL_PASSWORD=
+      - NOTICER_EMAIL_ENCRYPTION=ssl
+      - NOTICER_EMAIL_FROM_ADDRESS=
+      - NOTICER_EMAIL_FROM_NAME=哮天犬告警平台
+      - START_PROCESSES=consumer,upgrade,delay,workflow
+      - LOG_FORMATTER_CLASS_DEFAULT=Monolog\Formatter\LineFormatter
+      - LOG_FORMATTER_CLASS_MONITOR=Monolog\Formatter\LineFormatter
+      - LOG_FORMATTER_CLASS_NOTICER=Monolog\Formatter\LineFormatter
+      - CONSUMER_DRIVER=redis
+      - CONSUMER_DATA_SYNC_INTERVAL=5000
+      - CONSUMER_MQPROXY_APPID=
+      - CONSUMER_MQPROXY_APPKEY=
+      - CONSUMER_MQPROXY_TOPIC=alarm-dog
+      - CONSUMER_MQPROXY_GROUP=alarm_consumer
+      - CONSUMER_MQPROXY_RESET=earlies
+      - CONSUMER_MQPROXY_COMMIT_TIMEOUT=20
+      - CONSUMER_MQPROXY_MAX_MSGS=100
+      - CONSUMER_MQPROXY_MAX_COMSUME_TIMES=3
+      - CONSUMER_MQPROXY_MAX_PARTITION_SIZE=8
+      - CONSUMER_MQPROXY_MAX_CONSUMING_COUNT=500
+      - CONSUMER_REDIS_INSTANCE=default
+      - CONSUMER_REDIS_KEY_MESSAGE=alarm-dog.queue.message
+      - CONSUMER_REDIS_KEY_CONSUMING=alarm-dog.queue.consuming
+      - CONSUMER_KAFKA_BROKERS=kafka:9092
+      - APP_ADMIN_URL=http://127.0.0.1:8081
+    volumes:
+      - ./alarm-dog-consumer/:/opt/www:rw
+  monitor:
+    image: ethananony/alarm-dog-php:1.0.0
+    environment: 
+      - DB_RO_HOST=mysql
+      - DB_PREFIX=xes_alarm_
+      - DB_RO_PORT=3306
+      - DB_RO_DATABASE=alarm_dog
+      - DB_RO_USERNAME=root
+      - DB_RO_PASSWORD=root
+      - DB_RW_HOST=mysql
+      - DB_RW_PORT=3306
+      - DB_RW_DATABASE=alarm_dog
+      - DB_RW_USERNAME=root
+      - DB_RW_PASSWORD=root
+      - REDIS_HOST=redis
+      - REDIS_AUTH=(null)
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - ALARM_API_URI=http://api:9501/alarm/report
+    volumes:
+      - ./alarm-dog-monitor/:/opt/www:rw
+    entrypoint: [php, 'bin/hyperf.php', alarm:monitor]
+  mysql:
+    image: mysql:5.7.28
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    # ports:
+    #   - "3306:3306"
+    volumes:
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf:ro
+      - ./docker/mysql/data:/var/lib/mysql:rw
+      - ./docker/mysql/logs:/var/log/mysql:rw
+      - ./alarm-dog-admin/resource/alarm_dog.sql:/data/alarm_dog.sql:ro
+  redis:
+    image: redis:5.0.4-alpine
+    # ports:
+    #   - "6379:6379"
+    volumes:
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - ./docker/redis/data:/data:rw
+    entrypoint: [redis-server, '/usr/local/etc/redis/redis.conf']
+  clickhouse:
+    image: yandex/clickhouse-server:19.16.16.72
+    # ports:
+    #   - "9090:9090"
+    #   - "9009:9009"
+    #   - "9000:9000"
+    #   - "8123:8123"
+    volumes:
+      - ./docker/clickhouse/data:/var/lib/clickhouse:rw
+      - ./alarm-dog-admin/resource/clickhouse.sql:/data/clickhouse.sql:ro
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+  

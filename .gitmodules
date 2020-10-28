@@ -1,0 +1,30 @@
+[submodule "alarm-dog-fe"]
+	path = alarm-dog-fe
+	url = git@github.com:tal-tech/alarm-dog-fe.git
+[submodule "alarm-dog-admin"]
+	path = alarm-dog-admin
+	url = git@github.com:tal-tech/alarm-dog-admin.git
+[submodule "alarm-dog-api"]
+	path = alarm-dog-api
+	url = git@github.com:tal-tech/alarm-dog-api.git
+[submodule "alarm-dog-monitor"]
+	path = alarm-dog-monitor
+	url = git@github.com:tal-tech/alarm-dog-monitor.git
+[submodule "alarm-dog-consumer"]
+	path = alarm-dog-consumer
+	url = git@github.com:tal-tech/alarm-dog-consumer.git
+[submodule "alarm-dog-docs"]
+	path = alarm-dog-docs
+	url = git@github.com:tal-tech/alarm-dog-docs.git
+[submodule "alarm-dog-php-sdk"]
+	path = alarm-dog-php-sdk
+	url = git@github.com:tal-tech/alarm-dog-php-sdk.git
+[submodule "alarm-dog-java-sdk"]
+	path = alarm-dog-java-sdk
+	url = git@github.com:tal-tech/alarm-dog-java-sdk.git
+[submodule "alarm-dog-golang-sdk"]
+	path = alarm-dog-golang-sdk
+	url = git@github.com:tal-tech/alarm-dog-golang-sdk.git
+[submodule "alarm-dog-noticer"]
+	path = alarm-dog-noticer
+	url = git@github.com:tal-tech/alarm-dog-noticer.git
