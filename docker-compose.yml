@@ -42,7 +42,7 @@ services:
       - MIDDLEWARE_ENABLE_CORS=(true)
       - SWOOLE_HTTP_HOST=0.0.0.0
       - SWOOLE_HTTP_PORT=9501
-    volumes: 
+    volumes:
       - ./alarm-dog-admin/:/opt/www:rw
   fe:
     image: ethananony/alarm-dog-fe:1.0.0
@@ -55,9 +55,9 @@ services:
       - VUE_APP_BASE_API=//127.0.0.1:8081/api/
       - DOG_FE_VERSION=docker-
       - VUE_APP_FORCE_HTTPS=
-    volumes: 
+    volumes:
       - ./alarm-dog-fe/:/opt/www:rw
-      - ./docker/fe/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./docker/fe/nginx/conf.d:/etc/nginx/conf.d:rw
       - ./docker/fe/nginx/logs:/var/log/nginx:rw
       - ./docker/fe/docker-entrypoint.sh:/docker-entrypoint.sh
     working_dir: /opt/www
@@ -164,7 +164,7 @@ services:
       - ./alarm-dog-consumer/:/opt/www:rw
   monitor:
     image: ethananony/alarm-dog-php:1.0.0
-    environment: 
+    environment:
       - DB_RO_HOST=mysql
       - DB_PREFIX=xes_alarm_
       - DB_RO_PORT=3306
@@ -218,4 +218,3 @@ services:
       nofile:
         soft: 262144
         hard: 262144
-  
