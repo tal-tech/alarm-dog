@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 cd /opt/www
 
 yarn config set registry https://registry.npm.taobao.org

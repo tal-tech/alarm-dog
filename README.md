@@ -6,16 +6,7 @@
 
 ```
 # 拉去子模块
-git submodule update
-
-# admin/api/consumer/monitor 初始化
-docker run -d --rm -v `pwd`:/alarm --name init ethananony/alarm-dog-php:1.0.0
-docker exec -ti init bash
-cd /alarm/alarm-dog-admin && composer install --no-dev && php bin/hyperf.php list
-cd /alarm/alarm-dog-api && composer install --no-dev && php bin/hyperf.php list
-cd /alarm/alarm-dog-consumer && composer install --no-dev && php bin/hyperf.php list
-cd /alarm/alarm-dog-monitor && composer install --no-dev && php bin/hyperf.php list
-docker stop init
+git clone https://github.com/tal-tech/alarm-dog.git --recursive
 
 # 根据实际情况修改 docker-compose.yml 中以下参数
 VUE_APP_STATIC_PREFIX=//127.0.0.1:8081/admin/

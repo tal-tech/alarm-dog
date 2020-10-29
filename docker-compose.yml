@@ -44,6 +44,9 @@ services:
       - SWOOLE_HTTP_PORT=9501
     volumes:
       - ./alarm-dog-admin/:/opt/www:rw
+      - ./docker/php/docker-entrypoint.sh:/docker-entrypoint.sh
+    working_dir: /opt/www
+    entrypoint: [ /docker-entrypoint.sh ]
   fe:
     image: ethananony/alarm-dog-fe:1.0.0
     ports:
@@ -114,6 +117,9 @@ services:
       - SWOOLE_HTTP_PORT=9501
     volumes:
       - ./alarm-dog-api/:/opt/www:rw
+      - ./docker/php/docker-entrypoint.sh:/docker-entrypoint.sh
+    working_dir: /opt/www
+    entrypoint: [ /docker-entrypoint.sh ]
   consumer:
     image: ethananony/alarm-dog-php:1.0.0
     environment:
@@ -162,6 +168,9 @@ services:
       - APP_ADMIN_URL=http://127.0.0.1:8081
     volumes:
       - ./alarm-dog-consumer/:/opt/www:rw
+      - ./docker/php/docker-entrypoint.sh:/docker-entrypoint.sh
+    working_dir: /opt/www
+    entrypoint: [ /docker-entrypoint.sh ]
   monitor:
     image: ethananony/alarm-dog-php:1.0.0
     environment:
@@ -183,7 +192,10 @@ services:
       - ALARM_API_URI=http://api:9501/alarm/report
     volumes:
       - ./alarm-dog-monitor/:/opt/www:rw
-    entrypoint: [php, 'bin/hyperf.php', alarm:monitor]
+      - ./docker/php/docker-entrypoint.sh:/docker-entrypoint.sh
+    working_dir: /opt/www
+    entrypoint: [ /docker-entrypoint.sh ]
+    command: [php, 'bin/hyperf.php', alarm:monitor]
   mysql:
     image: mysql:5.7.28
     environment:
