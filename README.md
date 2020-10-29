@@ -16,9 +16,9 @@ create database alarm_dog;
 source alarm_dog.sql;
 
 # 导入clickhouse
-docker exec it alarm-dog_clickhouse_1 /bin/bash
+docker exec -it alarm-dog_clickhouse_1 /bin/bash
 cd /data
-clickhouse-cli
+clickhouse-client
 create database alarm_dog;
 source clickhouse.sql;
 ```
