@@ -205,7 +205,7 @@ services:
     volumes:
       - ./docker/mysql/my.cnf:/etc/mysql/my.cnf:ro
       - ./docker/mysql/data:/var/lib/mysql:rw
-      - ./docker/mysql/logs:/var/log/mysql:rw
+      # - ./docker/mysql/logs:/var/log/mysql:rw
       - ./alarm-dog-admin/resource/alarm_dog.sql:/data/alarm_dog.sql:ro
   redis:
     image: redis:5.0.4-alpine
