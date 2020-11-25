@@ -42,8 +42,11 @@ services:
       - MIDDLEWARE_ENABLE_CORS=(true)
       - SWOOLE_HTTP_HOST=0.0.0.0
       - SWOOLE_HTTP_PORT=9501
-    volumes: 
+    volumes:
       - ./alarm-dog-admin/:/opt/www:rw
+      - ./docker/php/docker-entrypoint.sh:/docker-entrypoint.sh
+    working_dir: /opt/www
+    entrypoint: [ /docker-entrypoint.sh ]
   fe:
     image: ethananony/alarm-dog-fe:1.0.0
     ports:
@@ -55,9 +58,9 @@ services:
       - VUE_APP_BASE_API=//127.0.0.1:8081/api/
       - DOG_FE_VERSION=docker-
       - VUE_APP_FORCE_HTTPS=
-    volumes: 
+    volumes:
       - ./alarm-dog-fe/:/opt/www:rw
-      - ./docker/fe/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./docker/fe/nginx/conf.d:/etc/nginx/conf.d:rw
       - ./docker/fe/nginx/logs:/var/log/nginx:rw
       - ./docker/fe/docker-entrypoint.sh:/docker-entrypoint.sh
     working_dir: /opt/www
@@ -114,6 +117,9 @@ services:
       - SWOOLE_HTTP_PORT=9501
     volumes:
       - ./alarm-dog-api/:/opt/www:rw
+      - ./docker/php/docker-entrypoint.sh:/docker-entrypoint.sh
+    working_dir: /opt/www
+    entrypoint: [ /docker-entrypoint.sh ]
   consumer:
     image: ethananony/alarm-dog-php:1.0.0
     environment:
@@ -162,9 +168,12 @@ services:
       - APP_ADMIN_URL=http://127.0.0.1:8081
     volumes:
       - ./alarm-dog-consumer/:/opt/www:rw
+      - ./docker/php/docker-entrypoint.sh:/docker-entrypoint.sh
+    working_dir: /opt/www
+    entrypoint: [ /docker-entrypoint.sh ]
   monitor:
     image: ethananony/alarm-dog-php:1.0.0
-    environment: 
+    environment:
       - DB_RO_HOST=mysql
       - DB_PREFIX=xes_alarm_
       - DB_RO_PORT=3306
@@ -183,7 +192,10 @@ services:
       - ALARM_API_URI=http://api:9501/alarm/report
     volumes:
       - ./alarm-dog-monitor/:/opt/www:rw
-    entrypoint: [php, 'bin/hyperf.php', alarm:monitor]
+      - ./docker/php/docker-entrypoint.sh:/docker-entrypoint.sh
+    working_dir: /opt/www
+    entrypoint: [ /docker-entrypoint.sh ]
+    command: [php, 'bin/hyperf.php', alarm:monitor]
   mysql:
     image: mysql:5.7.28
     environment:
@@ -193,7 +205,7 @@ services:
     volumes:
       - ./docker/mysql/my.cnf:/etc/mysql/my.cnf:ro
       - ./docker/mysql/data:/var/lib/mysql:rw
-      - ./docker/mysql/logs:/var/log/mysql:rw
+      # - ./docker/mysql/logs:/var/log/mysql:rw
       - ./alarm-dog-admin/resource/alarm_dog.sql:/data/alarm_dog.sql:ro
   redis:
     image: redis:5.0.4-alpine
@@ -218,4 +230,3 @@ services:
       nofile:
         soft: 262144
         hard: 262144
-  

@@ -1,10 +1,18 @@
 # 哮天犬告警平台
 
 哮天犬是一个通用的统一告警平台，提供配置化、流程化、标准化的能力。可以选择对接日志中心日志类监控、实时计算类的监控能力，各业务方也可以直接在代码中埋点上报告警，同时我们团队也可以定制化开发既能满足业务需求又能快速复用告警平台的监控系统，实现监控告警全场景覆盖。
+[使用文档](https://www.yuque.com/tal-tech/alarm-dog)
 
 ## 开始使用
 
 ```
+# 拉去子模块
+git clone https://github.com/tal-tech/alarm-dog.git --recursive
+
+# 根据实际情况修改 docker-compose.yml 中以下参数
+VUE_APP_STATIC_PREFIX=//127.0.0.1:8081/admin/
+VUE_APP_BASE_API=//127.0.0.1:8081/api/
+
 # 启动docker
 docker-compose up -d
 
@@ -13,15 +21,19 @@ docker exec -it alarm-dog_mysql_1 /bin/bash
 cd /data
 mysql -p (password: root)
 create database alarm_dog;
+use alarm_dog;
 source alarm_dog.sql;
 
 # 导入clickhouse
-docker exec it alarm-dog_clickhouse_1 /bin/bash
+docker exec -it alarm-dog_clickhouse_1 /bin/bash
 cd /data
-clickhouse-cli
+clickhouse-client
 create database alarm_dog;
+use alarm_dog;
 source clickhouse.sql;
 ```
+
+默认账号：admin 密码：alarm-dog
 
 ## 模块介绍
 
