@@ -6,7 +6,7 @@
 ## 开始使用
 
 ```
-# 拉去子模块
+# 拉取子模块
 git clone https://github.com/tal-tech/alarm-dog.git --recursive
 
 # 根据实际情况修改 docker-compose.yml 中以下参数
